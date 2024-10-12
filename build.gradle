@@ -1,0 +1,50 @@
+import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
+
+plugins {
+    id 'io.papermc.paperweight.userdev' version '1.7.1'
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://papermc.io/repo/repository/maven-public/'
+    }
+    maven {
+        url 'https://repo.codemc.io/repository/maven-releases/'
+    }
+}
+
+dependencies {
+    paperweightDevelopmentBundle 'io.papermc.paper:dev-bundle:1.21.1-R0.1-SNAPSHOT'
+}
+
+paperweight {
+    reobfArtifactConfiguration = ReobfArtifactConfiguration.getMOJANG_PRODUCTION()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.processResources {
+    processResources {
+        filesMatching('plugin.yml') {
+            expand 'version': project.version
+        }
+    }
+}
+
+tasks.register('renameReobfJar', Copy) {
+    dependsOn tasks.named('reobfJar')
+    from tasks.named('reobfJar').get().outputs.files
+    into "${buildDir}/libs"
+    rename { String fileName ->
+        "LobbySystem Release.jar"
+    }
+}
+
+tasks.assemble {
+    dependsOn renameReobfJar
+}
