@@ -1,0 +1,24 @@
+## Settings Configuration
+
+# World Spawn Location
+world:
+  spawn-location:
+    world: world         # World name (default: 'world')
+    x: 0                 # X coordinate of the spawn location
+    y: 90                # Y coordinate of the spawn location
+    z: 0                 # Z coordinate of the spawn location
+    yaw: 0               # Yaw (rotation) at spawn location
+    pitch: 0             # Pitch (vertical angle) at spawn location
+  set-auto-spawnlocation: false # Automatically set spawn location
+  do-daylight-cycle: false # Automatically sets game rules for DO_DAYLIGHT_CYCLE
+  do-weather-cycle: false # Automatically sets game rules for DO_WEATHER_CYCLE
+  world-time: 18000 # Automatically sets the time in the world
+  clear-weather: false # Automatically clears weather to avoid rain, thunder, etc.
+
+# Server Settings
+server:
+  max-players: 50        # Maximum number of players allowed on the server (default: 50)
+
+# Plugin Settings
+helper:
+  enable-logging: false

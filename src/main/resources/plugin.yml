@@ -1,5 +1,5 @@
 name: LobbySystem
-version: '1.0.0'
+version: '1.0.1'
 main: de.vinnie.LobbySystem
 api-version: '1.21'
 authors: [ tnecnivvv ]

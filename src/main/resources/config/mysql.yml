@@ -1,0 +1,27 @@
+# Database Configuration
+database:
+  user: user                # Database user (default: 'user')
+  password: password        # Database password (default: 'password')
+  host: 0.0.0.0             # Database host (default: '0.0.0.0')
+  port: 3306                # Database port (default: 3306)
+  name: default             # Database name (default: 'default')
+
+# SSL Configuration
+ssl:
+  requireSSL: false                    # Use SSL (default: false)
+  verifyServerCertificate: false       # Verify server certificate (default: false)
+  sslMode: DISABLED                    # SSL Mode (options: 'DISABLED', 'TRUST')
+
+# Hikari Connection Pool Settings
+hikari:
+  cachePrepStmts: true                 # Cache prepared statements (default: true)
+  prepStmtCacheSize: 250               # Prepared statement cache size (default: 250)
+  prepStmtCacheSqlLimit: 2048          # Prepared statement cache SQL limit (default: 2048)
+  maximumPoolSize: 4                   # Maximum number of connections in the pool (default: 4)
+  minimumIdle: 2                       # Minimum number of idle connections (default: 2)
+  poolLifeTime: 1800000                # Pool lifetime in milliseconds (default: 1800000)
+  connectionTimeOut: 30000             # Connection timeout in milliseconds (default: 30000)
+  idleTimeout: 300000                  # Idle timeout in milliseconds (default: 300000)
+
+  # Leak Detection Settings
+  threshold: 2000                      # Leak detection threshold in milliseconds (default: 2000)

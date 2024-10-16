@@ -1,0 +1,16 @@
+# Player Profile Settings
+
+# Initial game level for new players (default: 0)
+gamelevel: 0
+
+# Starting rank for players (default: 'Player')
+gamerank: Player
+
+# Starting balance of universal network coins (default: 1000)
+sushi: 1000
+
+# Terms of Service agreement status (default: false, player must accept)
+termsofservice: false
+
+# Default language for the player (default: 'en_US' - English)
+language: en_US
