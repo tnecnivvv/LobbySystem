@@ -10,7 +10,6 @@ import de.vinnie.network.event.entity.FoodLevelChangeEvent;
 import de.vinnie.network.event.inventory.InventoryClickEvent;
 import de.vinnie.network.event.player.PlayerJoinEvent;
 import de.vinnie.network.event.player.PlayerQuitEvent;
-import de.vinnie.network.plugin.Updater;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -25,9 +24,6 @@ public class SystemManager {
 
     private static volatile SystemManager systemManager;
     private final LobbySystem lobbySystem;
-
-    private final String SERVER_MOTD = ChatColor.LIGHT_PURPLE + "               Aetheria Network" + ChatColor.GRAY + " [1.21+] \n" +
-            ChatColor.GRAY + "                  Currently in Beta";
 
     private final List<Listener> listeners = Arrays.asList(
             new PlayerJoinEvent(),
@@ -66,7 +62,6 @@ public class SystemManager {
         configureListeners();
         configureServer();
         configureWorlds();
-        Updater.getUpdater().checkForUpdates();
     }
 
     /*
@@ -82,8 +77,9 @@ public class SystemManager {
     }
 
     private void configureServer() {
-        lobbySystem.getServer().setMotd(SERVER_MOTD);
-        lobbySystem.getServer().setMaxPlayers(Objects.requireNonNull(ConfigManager.getConfig(ConfigTypes.SETTINGS)).server.maxPlayers);
+        ConfigValues.ServerConfig configValues = Objects.requireNonNull(ConfigManager.getConfig(ConfigTypes.SETTINGS)).server;
+        lobbySystem.getServer().setMotd(ChatColor.translateAlternateColorCodes('&', configValues.motd));
+        lobbySystem.getServer().setMaxPlayers(configValues.maxPlayers);
         lobbySystem.getServer().getMessenger().registerOutgoingPluginChannel(lobbySystem, "BungeeCord");
         logInfo("Successfully configured server");
     }

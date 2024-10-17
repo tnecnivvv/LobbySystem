@@ -2,6 +2,7 @@ package de.vinnie;
 
 import de.vinnie.network.ConfigManager;
 import de.vinnie.network.SystemManager;
+import de.vinnie.network.plugin.Updater;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class LobbySystem extends JavaPlugin {
@@ -16,6 +17,7 @@ public final class LobbySystem extends JavaPlugin {
     public void onLoad() {
         instance = this;
         ConfigManager.loadConfigs();
+        Updater.getUpdater().checkForUpdates();
     }
 
     @Override

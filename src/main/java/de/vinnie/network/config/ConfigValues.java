@@ -90,6 +90,8 @@ public class ConfigValues {
     }
 
     public static class ServerConfig {
+        public String motd;
+
         @JsonProperty("max-players")
         public int maxPlayers;
     }
@@ -97,5 +99,7 @@ public class ConfigValues {
     public static class PluginConfig {
         @JsonProperty("enable-logging")
         public boolean loggingConfigure;
+        @JsonProperty("check-for-updates")
+        public boolean checkForUpdates;
     }
 }

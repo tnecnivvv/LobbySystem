@@ -40,7 +40,7 @@ public class ConfigManager {
                 LobbySystem.getInstance().getLogger().severe("Error copying " + configTypes.getFileName() + ": " + e.getMessage());
             }
         } else {
-            LobbySystem.getInstance().getLogger().info(configTypes.getFileName() + " already exists.");
+            LobbySystem.getInstance().getLogger().info(configTypes.getFileName() + " successfully verified.");
         }
     }
 
