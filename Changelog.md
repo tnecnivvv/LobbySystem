@@ -1,9 +1,8 @@
-## 🗓️ Patch for Version 1.0.2
+## 🗓️ Version 1.0.2
 ### Plugin Updates
 - [X] Implemented **DataSource** using HikariCP for connection pooling.
 - [X] Introduced a **Cache System** (beta).
 - [X] Added **DataProfiles** to manage all values and table names.
-- [X] Updated **DataSource** for compatibility with **DataCache** and **DataProfiles**.
 
 ## 🗓️ Patch for Version 1.0.1
 ### Plugin Updates
