@@ -1,6 +1,7 @@
 package de.vinnie.network;
 
 import de.vinnie.LobbySystem;
+import de.vinnie.mysql.source.DataSource;
 import de.vinnie.network.config.ConfigTypes;
 import de.vinnie.network.config.ConfigValues;
 import de.vinnie.network.event.block.BlockBreakEvent;
@@ -62,6 +63,12 @@ public class SystemManager {
         configureListeners();
         configureServer();
         configureWorlds();
+        openDatabaseConnection();
+    }
+
+    public void cleanupResources() {
+        closeDatabaseConnection();
+        // ...
     }
 
     /*
@@ -92,6 +99,14 @@ public class SystemManager {
             applySpawnLocation(world, worldConfig);
         }
         logInfo("Successfully configured worlds");
+    }
+
+    private void openDatabaseConnection() {
+        DataSource.getInstance().openDataSource();
+    }
+
+    private void closeDatabaseConnection() {
+        DataSource.getInstance().closeDataSource();
     }
 
     /*

@@ -53,7 +53,7 @@ public class ConfigValues {
     }
 
     // --------------------------
-    // WORLD AND SERVER SETTINGS
+    // WORLD, SERVER AND PLUGIN SETTINGS
     // --------------------------
     public WorldConfig world;
     public ServerConfig server;

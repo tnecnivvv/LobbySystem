@@ -27,6 +27,6 @@ public final class LobbySystem extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        SystemManager.getSystemManager().cleanupResources();
     }
 }
