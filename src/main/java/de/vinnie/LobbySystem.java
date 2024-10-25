@@ -1,6 +1,7 @@
 package de.vinnie;
 
 import de.vinnie.network.ConfigManager;
+import de.vinnie.network.DatabaseManager;
 import de.vinnie.network.SystemManager;
 import de.vinnie.network.plugin.Updater;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,10 +24,11 @@ public final class LobbySystem extends JavaPlugin {
     @Override
     public void onEnable() {
         SystemManager.getSystemManager().initialize();
+        DatabaseManager.getDatabaseManager().initialize();
     }
 
     @Override
     public void onDisable() {
-        SystemManager.getSystemManager().cleanupResources();
+        DatabaseManager.getDatabaseManager().cleanupConnections();
     }
 }

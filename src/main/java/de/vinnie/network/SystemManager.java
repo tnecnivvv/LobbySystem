@@ -10,6 +10,7 @@ import de.vinnie.network.event.entity.EntityDamageEvent;
 import de.vinnie.network.event.entity.FoodLevelChangeEvent;
 import de.vinnie.network.event.inventory.InventoryClickEvent;
 import de.vinnie.network.event.player.PlayerJoinEvent;
+import de.vinnie.network.event.player.PlayerLoginEvent;
 import de.vinnie.network.event.player.PlayerQuitEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -27,6 +28,7 @@ public class SystemManager {
     private final LobbySystem lobbySystem;
 
     private final List<Listener> listeners = Arrays.asList(
+            new PlayerLoginEvent(),
             new PlayerJoinEvent(),
             new PlayerQuitEvent(),
             new BlockBreakEvent(),
@@ -44,7 +46,7 @@ public class SystemManager {
      |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|
                                |___/
     */
-    public SystemManager() {
+    private SystemManager() {
         this.lobbySystem = LobbySystem.getInstance();
     }
 
@@ -63,12 +65,6 @@ public class SystemManager {
         configureListeners();
         configureServer();
         configureWorlds();
-        openDatabaseConnection();
-    }
-
-    public void cleanupResources() {
-        closeDatabaseConnection();
-        // ...
     }
 
     /*
@@ -99,14 +95,6 @@ public class SystemManager {
             applySpawnLocation(world, worldConfig);
         }
         logInfo("Successfully configured worlds");
-    }
-
-    private void openDatabaseConnection() {
-        DataSource.getInstance().openDataSource();
-    }
-
-    private void closeDatabaseConnection() {
-        DataSource.getInstance().closeDataSource();
     }
 
     /*

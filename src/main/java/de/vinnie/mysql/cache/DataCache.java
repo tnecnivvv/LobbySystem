@@ -135,16 +135,16 @@ public class DataCache {
                   |_|
     */
     public void receiveAll() {
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.GAMELEVEL, level, Integer.class, false);
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.GAMERANK, rank, String.class, false);
+        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKLEVEL, level, Integer.class, false);
+        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKRANK, rank, String.class, false);
         execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.PLAYTIME, playtime, Integer.class, false);
         execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.SUSHI, sushi, Integer.class, false);
         execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.LANGUAGE, language, String.class, false);
     }
 
     public void saveAll() {
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.GAMELEVEL, level, Integer.class, true);
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.GAMERANK, rank, String.class, true);
+        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKLEVEL, level, Integer.class, true);
+        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKRANK, rank, String.class, true);
         execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.PLAYTIME, playtime, Integer.class, true);
         execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.SUSHI, sushi, Integer.class, true);
         execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.LANGUAGE, language, String.class, true);

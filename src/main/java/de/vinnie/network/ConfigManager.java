@@ -16,7 +16,7 @@ public class ConfigManager {
 
     private static final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
-    public ConfigManager() {}
+    private ConfigManager() {}
 
     public static void loadConfigs() {
         for (ConfigTypes config : ConfigTypes.values()) {

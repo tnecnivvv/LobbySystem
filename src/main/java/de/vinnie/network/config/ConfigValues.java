@@ -102,4 +102,17 @@ public class ConfigValues {
         @JsonProperty("check-for-updates")
         public boolean checkForUpdates;
     }
+
+    // --------------------------------
+    // PLAYER DATA FOR DATABASE
+    // --------------------------------
+    public PlayerDataConfig playerData;
+
+    public static class PlayerDataConfig {
+        public int networklevel;
+        public String networkrank;
+        public int sushi;
+        public boolean termsofservice;
+        public String language;
+    }
 }
