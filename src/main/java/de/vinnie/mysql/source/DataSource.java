@@ -8,6 +8,7 @@ import de.vinnie.network.config.ConfigTypes;
 import de.vinnie.network.config.ConfigValues;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class DataSource {
 
@@ -45,21 +46,21 @@ public class DataSource {
         try {
             HikariConfig hikariConfig = setupHikariConfig();
             dataSource = new HikariDataSource(hikariConfig);
-            systemManager.logInfo("Successfully initialized HikariCP connection pool.");
+            systemManager.log(Level.INFO,"Successfully initialized HikariCP connection pool.", null);
 
         } catch (IllegalStateException e) {
-            systemManager.logInfo("Database configuration is missing or invalid");
+            systemManager.log(Level.WARNING,"Database configuration is missing or invalid", e);
         } catch (RuntimeException e) {
-            systemManager.logInfo("Failed to initialize the HikariCP connection pool");
+            systemManager.log(Level.SEVERE,"Failed to initialize the HikariCP connection pool", e);
         } catch (Exception e) {
-            systemManager.logInfo("An unexpected error occurred while initializing HikariCP");
+            systemManager.log(Level.SEVERE,"An unexpected error occurred while initializing HikariCP", e);
         }
     }
 
     public void closeDataSource() {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
-            systemManager.logInfo("HikariCP connection pool closed successfully.");
+            systemManager.log(Level.INFO,"HikariCP connection pool closed successfully.", null);
         }
     }
 
@@ -79,9 +80,9 @@ public class DataSource {
     private void loadDatabaseDriver() {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-            systemManager.logInfo("MariaDB driver loaded successfully.");
+            systemManager.log(Level.INFO,"MariaDB driver loaded successfully.", null);
         } catch (ClassNotFoundException e) {
-            systemManager.logInfo("MariaDB driver not found");
+            systemManager.log(Level.SEVERE,"MariaDB driver not found", e);
         }
     }
 
@@ -91,20 +92,10 @@ public class DataSource {
         ConfigValues.HikariConfig hkConfig = Objects.requireNonNull(ConfigManager.getConfig(ConfigTypes.MYSQL)).hikariConfig;
 
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(buildJdbcUrl(dbConfig));
+        config.setJdbcUrl(String.format("jdbc:mariadb://%s:%d/%s", dbConfig.host, dbConfig.port, dbConfig.name));
         config.setUsername(dbConfig.user);
         config.setPassword(dbConfig.password);
 
-        applyHikariProperties(config, hkConfig, sslConfig);
-
-        return config;
-    }
-
-    private String buildJdbcUrl(final ConfigValues.DatabaseConfig dbConfig) {
-        return String.format("jdbc:mariadb://%s:%d/%s", dbConfig.host, dbConfig.port, dbConfig.name);
-    }
-
-    private void applyHikariProperties(final HikariConfig config, final ConfigValues.HikariConfig hkConfig, final ConfigValues.SSLConfig sslConfig) {
         config.setMaximumPoolSize(hkConfig.maximumPoolSize);
         config.setMinimumIdle(hkConfig.minimumIdle);
         config.setConnectionTimeout(hkConfig.connectionTimeOut);
@@ -117,17 +108,12 @@ public class DataSource {
         config.addDataSourceProperty("prepStmtCacheSqlLimit", String.valueOf(hkConfig.prepStmtCacheSqlLimit));
 
         config.addDataSourceProperty("verifyServerCertificate", String.valueOf(sslConfig.verifyServerCertificate));
-        config.addDataSourceProperty("sslMode", getSSLMode(sslConfig.sslMode));
+        config.addDataSourceProperty("sslMode",
+                sslConfig.sslMode.equalsIgnoreCase("disabled") ? "disabled" :
+                        (sslConfig.sslMode.equalsIgnoreCase("trust") ? "trust" : "disabled")
+        );
         config.addDataSourceProperty("requireSSL", String.valueOf(sslConfig.requireSSL));
-    }
 
-    private String getSSLMode(final String sslModeValue) {
-        if (sslModeValue.equalsIgnoreCase("disabled")) {
-            return "disabled";
-        } else if (sslModeValue.equalsIgnoreCase("trust")) {
-            return "trust";
-        } else {
-            return "disabled";
-        }
+        return config;
     }
 }

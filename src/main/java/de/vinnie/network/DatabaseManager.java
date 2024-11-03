@@ -1,14 +1,14 @@
 package de.vinnie.network;
 
+import de.vinnie.mysql.cache.DataCache;
 import de.vinnie.mysql.source.DataSource;
-import de.vinnie.mysql.utility.tables.PlayerProfileTable;
+import de.vinnie.mysql.utility.tables.NetworkPlayerProfileTable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DatabaseManager {
 
-    private static volatile DatabaseManager instance;
     /*
       __  __
      |  \/  | __ _ _ __   __ _  __ _  ___ _ __
@@ -17,17 +17,19 @@ public class DatabaseManager {
      |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|
                                |___/
     */
+    private static volatile DatabaseManager databaseManager;
+
     private DatabaseManager() {}
 
     public static DatabaseManager getDatabaseManager() {
-        if (instance == null) {
+        if (databaseManager == null) {
             synchronized (DatabaseManager.class) {
-                if (instance == null) {
-                    instance = new DatabaseManager();
+                if (databaseManager == null) {
+                    databaseManager = new DatabaseManager();
                 }
             }
         }
-        return instance;
+        return databaseManager;
     }
 
     /*
@@ -59,6 +61,7 @@ public class DatabaseManager {
     */
     private void openDatabaseConnection() {
         DataSource.getInstance().openDataSource();
+        DataCache.getDataCache().clearAllCaches();
     }
 
     private void closeDatabaseConnection() {
@@ -67,7 +70,7 @@ public class DatabaseManager {
 
     private void createTables() {
         try (Connection conn = DataSource.getDataSource().getConnection()) {
-            PlayerProfileTable.createTable(conn);
+            NetworkPlayerProfileTable.getNetworkPlayerProfileTable().createTable(conn);
         } catch (SQLException e) {
             e.fillInStackTrace();
         }

@@ -94,6 +94,9 @@ public class ConfigValues {
 
         @JsonProperty("max-players")
         public int maxPlayers;
+
+        @JsonProperty("hide-red-scoreboard-numbers")
+        public boolean hideScoreboardNumbers;
     }
 
     public static class PluginConfig {

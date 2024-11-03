@@ -10,7 +10,7 @@ database:
 ssl:
   requireSSL: false                    # Use SSL (default: false)
   verifyServerCertificate: false       # Verify server certificate (default: false)
-  sslMode: DISABLED                    # SSL Mode (options: 'DISABLED', 'TRUST')
+  sslMode: disabled                    # SSL Mode (options: 'DISABLED', 'TRUST')
 
 # Hikari Connection Pool Settings
 hikari:

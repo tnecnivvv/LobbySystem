@@ -32,15 +32,15 @@ public class Updater {
                 String githubVersion = this.getVersionFromPluginYml(githubPluginYmlContent);
 
                 if (githubVersion != null && isPluginOutdated(githubVersion)) {
-                    LobbySystem.getInstance().getLogger().severe("Plugin Version Outdated!");
-                    LobbySystem.getInstance().getLogger().severe("Newest Version: " + githubVersion);
-                    LobbySystem.getInstance().getLogger().severe("Your Version: " + LobbySystem.getInstance().getDescription().getVersion());
+                    LobbySystem.getLobbySystem().getLogger().severe("Plugin Version Outdated!");
+                    LobbySystem.getLobbySystem().getLogger().severe("Newest Version: " + githubVersion);
+                    LobbySystem.getLobbySystem().getLogger().severe("Your Version: " + LobbySystem.getLobbySystem().getDescription().getVersion());
                 } else {
-                    LobbySystem.getInstance().getLogger().info("Plugin is up to date.");
+                    LobbySystem.getLobbySystem().getLogger().info("Plugin is up to date.");
                 }
 
             } catch (IOException e) {
-                LobbySystem.getInstance().getLogger().severe("Failed to check for updates: " + e.getMessage());
+                LobbySystem.getLobbySystem().getLogger().severe("Failed to check for updates: " + e.getMessage());
             }
         }
     }
@@ -68,7 +68,7 @@ public class Updater {
     }
 
     private boolean isPluginOutdated(String githubVersion) {
-        String currentVersion = LobbySystem.getInstance().getDescription().getVersion();
+        String currentVersion = LobbySystem.getLobbySystem().getDescription().getVersion();
         return !currentVersion.equals(githubVersion);
     }
 }

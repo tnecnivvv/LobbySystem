@@ -1,21 +1,25 @@
 package de.vinnie.mysql.cache;
 
+import de.vinnie.LobbySystem;
 import de.vinnie.mysql.profile.DataProfiles;
 import de.vinnie.mysql.source.DataSource;
+import de.vinnie.network.SystemManager;
+import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DataCache {
 
     private static volatile DataCache dataCache;
-    private static final Logger logger = Logger.getLogger(DataCache.class.getName());
+    private final SystemManager systemManager;
 
-    private DataCache() {}
+    private DataCache() {
+        systemManager = SystemManager.getSystemManager();
+    }
 
     public static DataCache getDataCache() {
         if (dataCache == null) {
@@ -28,13 +32,6 @@ public class DataCache {
         return dataCache;
     }
 
-
-    private final ConcurrentHashMap<UUID, Integer> level = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<UUID, String> rank = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<UUID, Integer> playtime = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<UUID, Integer> sushi = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<UUID, String> language = new ConcurrentHashMap<>();
-
     /*
        ____           _            __  __
       / ___|__ _  ___| |__   ___  |  \/  | __ _ _ __  ___
@@ -43,6 +40,12 @@ public class DataCache {
       \____\__,_|\___|_| |_|\___| |_|  |_|\__,_| .__/|___/
                                                |_|
     */
+    private final ConcurrentHashMap<UUID, Integer> level = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, String> rank = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Integer> playtime = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Integer> sushi = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, String> language = new ConcurrentHashMap<>();
+
     public ConcurrentHashMap<UUID, Integer> getLevel() {
         return level;
     }
@@ -85,10 +88,10 @@ public class DataCache {
 
     private <T> void execute(DataProfiles tableProfile, DataProfiles columnProfile,
                              ConcurrentHashMap<UUID, T> map, Class<T> clazz, boolean isUpdate) {
-        String column = columnProfile.getValue();
+        String column = columnProfile.getKey();
         String query = isUpdate
-                ? "UPDATE " + tableProfile.getValue() + " SET " + column + " = ? WHERE uuid = ?"
-                : "SELECT uuid, " + column + " FROM " + tableProfile.getValue();
+                ? "UPDATE " + tableProfile.getKey() + " SET " + column + " = ? WHERE uuid = ?"
+                : "SELECT uuid, " + column + " FROM " + tableProfile.getKey();
 
         try (Connection connection = DataSource.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -119,9 +122,9 @@ public class DataCache {
                 }
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database operation failed: " + e.getMessage(), e);
+            systemManager.log(Level.SEVERE, "Database operation failed.", e);
         } catch (ClassCastException e) {
-            logger.log(Level.WARNING, "Type mismatch for column: " + column + ". " + e.getMessage());
+            systemManager.log(Level.WARNING, "Type mismatch for column.", e);
         }
     }
 
@@ -134,12 +137,31 @@ public class DataCache {
      |_| |_|\___|_| .__/ \___|_|    |_|  |_|\___|\__|_| |_|\___/ \__,_|___/
                   |_|
     */
-    public void receiveAll() {
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKLEVEL, level, Integer.class, false);
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKRANK, rank, String.class, false);
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.PLAYTIME, playtime, Integer.class, false);
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.SUSHI, sushi, Integer.class, false);
-        execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.LANGUAGE, language, String.class, false);
+    public void receiveAll(UUID uuid) {
+        LobbySystem lobbySystem = LobbySystem.getLobbySystem();
+        try {
+            execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKLEVEL, level, Integer.class, false);
+            execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.NETWORKRANK, rank, String.class, false);
+            execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.PLAYTIME, playtime, Integer.class, false);
+            execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.SUSHI, sushi, Integer.class, false);
+            execute(DataProfiles.NETWORK_PLAYER_PROFILES, DataProfiles.LANGUAGE, language, String.class, false);
+        } catch (ClassCastException e) {
+            systemManager.log(Level.SEVERE, "Failed to load data for player " + uuid, e);
+            lobbySystem.getServer().getScheduler().runTask(lobbySystem, () -> {
+                Player player = lobbySystem.getServer().getPlayer(uuid);
+                if (player != null && player.isOnline()) {
+                    player.kickPlayer("Failed to load your data, please try again later.");
+                }
+            });
+        } catch (Exception e) {
+            systemManager.log(Level.SEVERE, "Unexpected error while loading data for player " + uuid, e);
+            lobbySystem.getServer().getScheduler().runTask(lobbySystem, () -> {
+                Player player = lobbySystem.getServer().getPlayer(uuid);
+                if (player != null && player.isOnline()) {
+                    player.kickPlayer("An unexpected error occurred, please try again later.");
+                }
+            });
+        }
     }
 
     public void saveAll() {

@@ -12,12 +12,24 @@ import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PlayerProfileTable {
+public class NetworkPlayerProfileTable {
 
-    public PlayerProfileTable() {}
+    private static volatile NetworkPlayerProfileTable networkPlayerProfileTable;
+    private NetworkPlayerProfileTable() {}
 
-    public static void createTable(Connection conn) throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS network_player_profiles ("
+    public static NetworkPlayerProfileTable getNetworkPlayerProfileTable() {
+        if (networkPlayerProfileTable == null) {
+            synchronized (NetworkPlayerProfileTable.class) {
+                if (networkPlayerProfileTable == null) {
+                    networkPlayerProfileTable = new NetworkPlayerProfileTable();
+                }
+            }
+        }
+        return networkPlayerProfileTable;
+    }
+
+    public void createTable(Connection conn) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS " + DataProfiles.NETWORK_PLAYER_PROFILES.getKey() + " ("
                 + "uuid VARCHAR(36) PRIMARY KEY,"
                 + "username VARCHAR(50) NOT NULL,"
                 + "networklevel INT NOT NULL,"
@@ -34,7 +46,7 @@ public class PlayerProfileTable {
         }
     }
 
-    public static void createPlayer(Player player) {
+    public void createPlayer(Player player) {
         ConfigValues.PlayerDataConfig playerDataConfig = Objects.requireNonNull(ConfigManager.getConfig(ConfigTypes.PLAYER_DATA)).playerData;
         UUID uuid = player.getUniqueId();
         String name = player.getName();
@@ -51,7 +63,7 @@ public class PlayerProfileTable {
             String formattedDate = sdf.format(new Date(currentTime.getTime()));
 
             try (Connection conn = DataSource.getDataSource().getConnection()) {
-                String checkSql = "SELECT COUNT(*) FROM " + DataProfiles.NETWORK_PLAYER_PROFILES + " WHERE uuid = ?";
+                String checkSql = "SELECT COUNT(*) FROM " + DataProfiles.NETWORK_PLAYER_PROFILES.getKey() + " WHERE uuid = ?";
                 try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                     checkStmt.setString(1, uuid.toString());
                     try (ResultSet rs = checkStmt.executeQuery()) {
@@ -63,6 +75,7 @@ public class PlayerProfileTable {
                     }
                 }
 
+                String insertSql = "INSERT INTO " + DataProfiles.NETWORK_PLAYER_PROFILES.getKey() +" (uuid, username, networklevel, networkrank, sushi, playtime, termsofservice, language, first_login, last_login) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
                     pstmt.setString(1, uuid.toString());
                     pstmt.setString(2, name);

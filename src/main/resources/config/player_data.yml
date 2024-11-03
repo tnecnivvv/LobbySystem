@@ -1,16 +1,7 @@
-# Player Profile Settings
-
-# Initial network level for new players (default: 0)
-networklevel: 0
-
-# Starting network rank for players (default: 'Player')
-networkrank: Player
-
-# Starting balance of universal network coins (default: 1000)
-sushi: 1000
-
-# Terms of Service agreement status (default: false, player must accept)
-termsofservice: false
-
-# Default language for the player (default: 'en_US' - English)
-language: en_US
+# Player Data Configuration
+playerData:
+  networklevel: 0                      # Player's network level (default: 0)
+  networkrank: "Player"                # Player's network rank (default: "Player")
+  sushi: 1000                           # Player's sushi balance (default: 1000)
+  termsofservice: false                 # Player's acceptance of terms of service (default: false)
+  language: "en_US"                    # Player's language preference (default: "en_US")

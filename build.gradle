@@ -9,7 +9,7 @@ plugins {
 repositories {
     mavenCentral()
     maven {
-        url 'https://papermc.io/repo/repository/maven-public/'
+        url 'https://repo.papermc.io/repository/maven-public/'
     }
     maven {
         url 'https://repo.codemc.io/repository/maven-releases/'

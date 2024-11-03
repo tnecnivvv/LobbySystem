@@ -1,7 +1,6 @@
 package de.vinnie.network;
 
 import de.vinnie.LobbySystem;
-import de.vinnie.mysql.source.DataSource;
 import de.vinnie.network.config.ConfigTypes;
 import de.vinnie.network.config.ConfigValues;
 import de.vinnie.network.event.block.BlockBreakEvent;
@@ -12,7 +11,7 @@ import de.vinnie.network.event.inventory.InventoryClickEvent;
 import de.vinnie.network.event.player.PlayerJoinEvent;
 import de.vinnie.network.event.player.PlayerLoginEvent;
 import de.vinnie.network.event.player.PlayerQuitEvent;
-import org.bukkit.ChatColor;
+import de.vinnie.network.scoreboard.ScoreboardTask;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,22 +20,9 @@ import org.bukkit.event.Listener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class SystemManager {
-
-    private static volatile SystemManager systemManager;
-    private final LobbySystem lobbySystem;
-
-    private final List<Listener> listeners = Arrays.asList(
-            new PlayerLoginEvent(),
-            new PlayerJoinEvent(),
-            new PlayerQuitEvent(),
-            new BlockBreakEvent(),
-            new BlockPlaceEvent(),
-            new EntityDamageEvent(),
-            new FoodLevelChangeEvent(),
-            new InventoryClickEvent()
-    );
 
     /*
       __  __
@@ -46,8 +32,11 @@ public class SystemManager {
      |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|
                                |___/
     */
+    private static volatile SystemManager systemManager;
+    private final LobbySystem lobbySystem;
+
     private SystemManager() {
-        this.lobbySystem = LobbySystem.getInstance();
+        this.lobbySystem = LobbySystem.getLobbySystem();
     }
 
     public static SystemManager getSystemManager() {
@@ -62,9 +51,10 @@ public class SystemManager {
     }
 
     public void initialize() {
-        configureListeners();
+        registerListeners();
         configureServer();
-        configureWorlds();
+        adjustWorlds();
+        scheduleTasks();
     }
 
     /*
@@ -74,27 +64,39 @@ public class SystemManager {
        | | (_| \__ \   <\__ \
        |_|\__,_|___/_|\_\___/
     */
-    private void configureListeners() {
+    private final List<Listener> listeners = Arrays.asList(
+            new PlayerLoginEvent(),
+            new PlayerJoinEvent(),
+            new PlayerQuitEvent(),
+            new BlockBreakEvent(),
+            new BlockPlaceEvent(),
+            new EntityDamageEvent(),
+            new FoodLevelChangeEvent(),
+            new InventoryClickEvent()
+    );
+
+    private void registerListeners() {
         this.listeners.forEach(listener -> lobbySystem.getServer().getPluginManager().registerEvents(listener, lobbySystem));
-        logInfo("Successfully registered listeners");
     }
 
     private void configureServer() {
         ConfigValues.ServerConfig configValues = Objects.requireNonNull(ConfigManager.getConfig(ConfigTypes.SETTINGS)).server;
-        lobbySystem.getServer().setMotd(ChatColor.translateAlternateColorCodes('&', configValues.motd));
+        lobbySystem.getServer().setMotd(ComponentManager.getComponentManager().serializeToLegacy(configValues.motd));
         lobbySystem.getServer().setMaxPlayers(configValues.maxPlayers);
-        lobbySystem.getServer().getMessenger().registerOutgoingPluginChannel(lobbySystem, "BungeeCord");
-        logInfo("Successfully configured server");
     }
 
-    private void configureWorlds() {
+    private void adjustWorlds() {
         ConfigValues.WorldConfig worldConfig = Objects.requireNonNull(ConfigManager.getConfig(ConfigTypes.SETTINGS)).world;
+
         for (World world : lobbySystem.getServer().getWorlds()) {
             applyWorldGameRules(world, worldConfig);
             applyWorldWeather(world, worldConfig);
             applySpawnLocation(world, worldConfig);
         }
-        logInfo("Successfully configured worlds");
+    }
+
+    private void scheduleTasks() {
+        new ScoreboardTask().runTaskTimer(lobbySystem, 0L, 30L);
     }
 
     /*
@@ -105,10 +107,14 @@ public class SystemManager {
      |_| |_|\___|_| .__/ \___|_|    |_|  |_|\___|\__|_| |_|\___/ \__,_|___/
                   |_|
     */
-    public void logInfo(String message) {
+    public void log(Level level, String message, Throwable exception) {
         ConfigValues.PluginConfig pluginConfig = Objects.requireNonNull(ConfigManager.getConfig(ConfigTypes.SETTINGS)).plugin;
-        if(pluginConfig.loggingConfigure) {
-            lobbySystem.getLogger().info(message);
+        if (pluginConfig.loggingConfigure) {
+            if (exception != null) {
+                lobbySystem.getLogger().log(level, message, exception);
+            } else {
+                lobbySystem.getLogger().log(level, message);
+            }
         }
     }
 
@@ -123,7 +129,6 @@ public class SystemManager {
             world.setStorm(false);
             world.setThundering(false);
             world.setWeatherDuration(12000);
-            logInfo("Successfully enabled clear weather.");
         } else {
             world.setStorm(true);
             world.setThundering(true);
@@ -145,9 +150,9 @@ public class SystemManager {
                 );
 
                 world.setSpawnLocation(location);
-                logInfo("Successfully set Spawnlocation.");
+                log(Level.INFO,"successfully set spawn location.", null);
             } else {
-                logInfo("Invalid spawn location in configuration.");
+                log(Level.WARNING,"Invalid spawn location in configuration.", null);
             }
         }
     }

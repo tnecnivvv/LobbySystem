@@ -17,8 +17,9 @@ world:
 
 # Server Settings
 server:
-  motd: "&dHello &cWorld"
+  motd: "<gold>Hello <red>World"
   max-players: 50        # Maximum number of players allowed on the server (default: 50)
+  hide-red-scoreboard-numbers: true
 
 # Plugin Settings
 plugin:

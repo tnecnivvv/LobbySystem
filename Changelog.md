@@ -1,3 +1,19 @@
+## 🗓️ Version 1.0.5
+### Plugin Updates
+#### New Features
+- **Localization System**: Introduced a full localization system using properties files, enabling multi-language support for various in-game messages.
+- **Code Clean-up**: Refactored and optimized numerous lines of code for improved readability and maintainability.
+- **DataCache and DataSource**: Completed and finalized the implementation of `DataCache` and `DataSource` for efficient data handling.
+- **Enhanced Logging**: Added a new, multi-level logger to categorize and prioritize logs. Errors and exceptions are now logged with increased clarity.
+- **Component Transition**: Updated the plugin to use `Components`, aligning with current Minecraft standards. The first implementation is visible in the **MOTD** (Message of the Day).
+- **Scoreboard Customization**: Added an option to hide the red numbers on the scoreboard for a cleaner visual experience.
+
+#### Bug Fixes
+- **MySQL Improvements**: Fixed multiple issues within the MySQL integration, including corrections to field names and template configurations, improving overall stability and reliability.
+
+#### Additional Notes
+- **Skipped Version 1.0.4**: Due to extensive new features and improvements, version 1.0.4 was skipped in favor of releasing this significant update as version 1.0.5.
+
 ## 🗓️ Version 1.0.3
 ### Plugin Updates
 - [X] Refactored `GAMELEVEL` to `NETWORKLEVEL` and `GAMERANK` to `NETWORKRANK`.
