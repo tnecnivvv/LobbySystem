@@ -1,0 +1,11 @@
+#Adjust the settings below to customize the plugin's behavior.
+
+updates:
+  # Enable or disable in-game update notifications.
+  notifications: true
+  #Check for updates at server startup.
+  check-on-startup: true
+
+logging:
+  #Enable detailed logging for debugging purposes.
+  verbose-logging: true

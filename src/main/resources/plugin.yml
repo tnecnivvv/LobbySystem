@@ -1,0 +1,6 @@
+name: LobbySystem
+version: '1.0.0-Beta'
+main: com.tnecnivvv.lobbySystem.LobbySystem
+api-version: '1.21'
+authors: [ tnecnivvv ]
+description: Lightweight LobbySystem
