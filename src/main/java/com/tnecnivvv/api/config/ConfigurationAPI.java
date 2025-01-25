@@ -23,7 +23,7 @@ public class ConfigurationAPI {
     /**
      * Saves the configuration files for each config type defined in the ConfigurationTypes
      */
-    public void saveConfigs() {
+    public void saveConfiguration() {
         for (ConfigurationTypes configType : ConfigurationTypes.values()) {
             File configFile = new File(lobbySystem.getDataFolder(), configType.getResourcePath());
             if (!configFile.exists()) {

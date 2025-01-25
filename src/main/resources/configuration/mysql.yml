@@ -1,0 +1,44 @@
+# MySQL Configuration
+mysql:
+  user:               "user"
+  password:           "password"
+  host:               "localhost"
+  port:               3306
+  database:           "default"
+
+# Hikari Configuration
+hikari:
+  # Caching settings
+  caching:
+    enableCaching:     true
+    cacheSize:         250
+    sqlLimit:          2048
+
+  # Pooling settings
+  pooling:
+    maxConnections:    4
+    maxLifetime:       1800000   # in milliseconds
+    minIdleConnections: 2
+    idleTimeout:       30000     # in milliseconds
+    connectionTimeout: 300000    # in milliseconds
+
+  # Detection settings
+  detection:
+    threshold:         2000      # in milliseconds
+
+# Redis Configuration
+jedis:
+  host: "localhost"
+  port: 6379
+  timeout: 2000
+  password: "password"
+
+  connection:
+    maxConnections: 50
+    maxIdleConnections: 10
+    minIdleConnections: 5
+    block-when-exhausted: true
+    test-on-borrow: true
+    test-on-return: true
+    test-while-idle: true
+    max-wait: 10000

@@ -19,9 +19,12 @@ repositories {
 }
 
 group = 'com.tnecnivvv'
-version = '1.0.0-BETA'
+version = '1.0.1-BETA'
 
 dependencies {
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.1'
+    implementation 'com.zaxxer:HikariCP:6.2.1'
+    implementation 'redis.clients:jedis:5.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2'
     paperweightDevelopmentBundle 'io.papermc.paper:dev-bundle:1.21.4-R0.1-SNAPSHOT'
@@ -59,9 +62,12 @@ paperweight {
 }
 
 shadowJar {
-    relocate("com.fasterxml.jackson.core", "org.tnecnivvv.libs.jackson.core")
-    relocate("com.fasterxml.jackson.databind", "org.tnecnivvv.libs.jackson.databind")
-    relocate("com.fasterxml.jackson.dataformat", "org.tnecnivvv.libs.jackson.dataformat")
+    relocate("org.mariadb.jdbc", "com.tnecnivvv.libraries.mariadb")
+    relocate("com.zaxxer.hikari", "com.tnecnivvv.libraries.hikari")
+    relocate("redis.clients", "com.tnecnivvv.libraries.redis")
+    relocate("com.fasterxml.jackson.core", "com.tnecnivvv.libraries.jackson.core")
+    relocate("com.fasterxml.jackson.databind", "com.tnecnivvv.libraries.jackson.databind")
+    relocate("com.fasterxml.jackson.dataformat", "com.tnecnivvv.libraries.jackson.dataformat")
 }
 
 tasks.register("renameReobfJar", Copy) {

@@ -1,6 +1,10 @@
 name: LobbySystem
-version: '1.0.0-Beta'
+version: '1.0.1-Beta'
 main: com.tnecnivvv.lobbySystem.LobbySystem
 api-version: '1.21'
-authors: [ tnecnivvv ]
+authors: [tnecnivvv]
 description: Lightweight LobbySystem
+permissions:
+  lobbysystem.update.notification:
+    description: Allows players to receive update notifications.
+    default: op

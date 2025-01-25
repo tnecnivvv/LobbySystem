@@ -2,7 +2,8 @@ package com.tnecnivvv.api.config;
 
 public enum ConfigurationTypes {
 
-    SETTINGS("configuration/settings.yml");
+    SETTINGS("configuration/settings.yml"),
+    MYSQL("configuration/mysql.yml");
 
     private final String resourcePath;
 
